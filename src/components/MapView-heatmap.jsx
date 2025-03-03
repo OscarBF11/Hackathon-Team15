@@ -51,10 +51,14 @@ function Root() {
 
     const fetchData = async () => {
     console.log('Fetching data...');
+
+    const now = Date.now();
+    const endDate = new Date(now).toISOString();
+    const startDate = new Date(now - 3600000).toISOString(); // one hour ago
     const res = await get_population(
         mapBounds,
-        '2025-03-04T11:00:00.000Z',
-        '2025-03-04T11:39:59.000Z',
+        startDate,
+        endDate,
         7
     );
 
@@ -112,7 +116,7 @@ function Root() {
   const handleMove = (event) => {
     const bounds = event.target.getBounds();
     updateMapBounds(bounds);
-    console.log('mapBounds:', mapBounds);
+    // console.log('mapBounds:', mapBounds);
 
     if (fetchTimer) {
         clearTimeout(fetchTimer);

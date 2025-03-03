@@ -1,0 +1,199 @@
+{
+    "timedPopulationDensityData": [
+        {
+            "startTime": "2025-03-04T11:00:00Z",
+            "endTime": "2025-03-04T11:30:00Z",
+            "cellPopulationDensityData": [
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0rw",
+                    "maxPplDensity": 18782,
+                    "minPplDensity": 8240,
+                    "pplDensity": 8832
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0ry",
+                    "maxPplDensity": 16876,
+                    "minPplDensity": 7403,
+                    "pplDensity": 7936
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0rz",
+                    "maxPplDensity": 17116,
+                    "minPplDensity": 7508,
+                    "pplDensity": 8048
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0xb",
+                    "maxPplDensity": 9341,
+                    "minPplDensity": 4156,
+                    "pplDensity": 4459
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0xc",
+                    "maxPplDensity": 2593,
+                    "minPplDensity": 1318,
+                    "pplDensity": 1425
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e22p",
+                    "maxPplDensity": 15131,
+                    "minPplDensity": 6398,
+                    "pplDensity": 6925
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e280",
+                    "maxPplDensity": 15858,
+                    "minPplDensity": 4582,
+                    "pplDensity": 5594
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e281",
+                    "maxPplDensity": 14751,
+                    "minPplDensity": 3050,
+                    "pplDensity": 4348
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e283",
+                    "maxPplDensity": 88546,
+                    "minPplDensity": 12730,
+                    "pplDensity": 21939
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e284",
+                    "maxPplDensity": 7385,
+                    "minPplDensity": 2254,
+                    "pplDensity": 2864
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e285",
+                    "maxPplDensity": 3547,
+                    "minPplDensity": 1854,
+                    "pplDensity": 2167
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e286",
+                    "maxPplDensity": 92879,
+                    "minPplDensity": 14564,
+                    "pplDensity": 24763
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e287",
+                    "maxPplDensity": 18774,
+                    "minPplDensity": 5051,
+                    "pplDensity": 7333
+                }
+            ]
+        },
+        {
+            "startTime": "2025-03-04T11:30:00Z",
+            "endTime": "2025-03-04T12:00:00Z",
+            "cellPopulationDensityData": [
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0rw",
+                    "maxPplDensity": 17474,
+                    "minPplDensity": 8976,
+                    "pplDensity": 11285
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0ry",
+                    "maxPplDensity": 15700,
+                    "minPplDensity": 8065,
+                    "pplDensity": 10139
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0rz",
+                    "maxPplDensity": 15923,
+                    "minPplDensity": 8180,
+                    "pplDensity": 10284
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0xb",
+                    "maxPplDensity": 8705,
+                    "minPplDensity": 4510,
+                    "pplDensity": 5676
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e0xc",
+                    "maxPplDensity": 2458,
+                    "minPplDensity": 1381,
+                    "pplDensity": 1758
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e22p",
+                    "maxPplDensity": 14000,
+                    "minPplDensity": 6913,
+                    "pplDensity": 8827
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e280",
+                    "maxPplDensity": 14355,
+                    "minPplDensity": 4406,
+                    "pplDensity": 6912
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e281",
+                    "maxPplDensity": 13760,
+                    "minPplDensity": 2467,
+                    "pplDensity": 5153
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e283",
+                    "maxPplDensity": 82941,
+                    "minPplDensity": 9161,
+                    "pplDensity": 25695
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e284",
+                    "maxPplDensity": 6963,
+                    "minPplDensity": 2074,
+                    "pplDensity": 3355
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e285",
+                    "maxPplDensity": 3618,
+                    "minPplDensity": 2016,
+                    "pplDensity": 2498
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e286",
+                    "maxPplDensity": 87734,
+                    "minPplDensity": 11880,
+                    "pplDensity": 28482
+                },
+                {
+                    "dataType": "DENSITY_ESTIMATION",
+                    "geohash": "sp3e287",
+                    "maxPplDensity": 18620,
+                    "minPplDensity": 6043,
+                    "pplDensity": 7737
+                }
+            ]
+        }
+    ],
+    "status": "SUPPORTED_AREA"
+}

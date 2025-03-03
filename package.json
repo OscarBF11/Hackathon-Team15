@@ -12,6 +12,7 @@
   "dependencies": {
     "deck.gl": "^9.1.4",
     "maplibre-gl": "^5.1.1",
+    "ngeohash": "^0.6.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-map-gl": "^8.0.1"

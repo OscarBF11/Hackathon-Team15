@@ -1,82 +1,128 @@
-body,
-html {
+/* Reset de márgenes y paddings para evitar desbordamientos */
+* {
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    /* Evita el scroll */
+    box-sizing: border-box;
 }
 
+/* Evita el scroll lateral en toda la página */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    /* Bloquea el scroll horizontal */
+}
+
+/* Contenedor principal */
 .home-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100vh;
-    /* Usa toda la altura de la pantalla */
-    background-color: #111;
+    align-items: center;
+    text-align: center;
+    background-color: black;
     color: yellow;
+    height: 100vh;
+    width: 100vw;
+    max-width: 100%;
+    overflow: hidden;
 }
 
+/* Header */
+.header {
+    width: 100%;
+    background-color: #222;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Contenido principal */
 .main-content {
     display: flex;
     flex: 1;
-    justify-content: space-between;
-    padding: 20px;
-}
-
-.data-analysis-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 20px;
-    border: 2px solid yellow;
-    border-radius: 10px;
-    width: 25%;
-    /* Ocupa el 25% del espacio */
-}
-
-.analysis-selector {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.map-section {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
-    border: 2px solid yellow;
-    border-radius: 10px;
-    width: 75%;
-    /* Ocupa el 75% del espacio */
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    overflow: hidden;
 }
 
-.map-controls {
+/* Sección del mapa */
+.map-section {
+    position: relative;
+    /* Permite posicionar los botones dentro */
+    flex: 1;
+    min-width: 40%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #222;
+    border-radius: 10px;
+    box-shadow: 3px 3px 10px rgba(255, 255, 0, 0.5);
+    margin: 10px;
+    padding: 20px;
+    max-width: 100%;
+}
+
+/* Contenedor de botones (análisis) */
+.analysis-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
     display: flex;
     gap: 10px;
-    margin-bottom: 10px;
 }
 
-button {
-    background-color: black;
-    color: yellow;
-    border: 2px solid yellow;
-    padding: 10px 15px;
+/* Estilos de los botones */
+.analysis-buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-button.active {
-    background-color: yellow;
+/* Colores diferenciados */
+.analysis-buttons button:nth-child(1) {
+    background-color: #ffcc00;
     color: black;
 }
 
-.footer {
-    text-align: center;
-    padding: 10px;
-    border-top: 2px solid yellow;
+.analysis-buttons button:nth-child(2) {
+    background-color: #ff6600;
+    color: white;
+}
+
+.analysis-buttons button:nth-child(3) {
+    background-color: #ff0000;
+    color: white;
+}
+
+.analysis-buttons button:hover {
+    filter: brightness(1.2);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        width: 100%;
+        overflow-y: auto;
+    }
+
+    .map-section {
+        width: 90%;
+        height: auto;
+    }
+
+    .analysis-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
 }

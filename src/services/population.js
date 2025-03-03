@@ -3,17 +3,19 @@
 import axios from 'axios';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
+const header = {
+    'x-rapidapi-key': API_KEY,
+    'x-rapidapi-host': 'population-density-data.nokia.rapidapi.com',
+    'Content-Type': 'application/json'
+}
+
 console.log("myAPI_KEY",API_KEY);
 
 const get_population = async (boundaryArray, startDate, endDate, precision) => {
     const options = {
     method: 'POST',
     url: 'https://population-density-data.p-eu.rapidapi.com/retrieve',
-    headers: {
-    'x-rapidapi-key': '8415751a7amsh788117af31b3b0ap134484jsnba2161137f74',
-    'x-rapidapi-host': 'population-density-data.nokia.rapidapi.com',
-    'Content-Type': 'application/json'
-    },
+    headers: header,
     data: {
     area: {
         areaType: 'POLYGON',

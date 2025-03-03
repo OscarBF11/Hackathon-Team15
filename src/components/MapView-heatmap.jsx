@@ -1,11 +1,19 @@
 import React, {useState, useEffect} from 'react';
 import {Map, NavigationControl, useControl} from 'react-map-gl/maplibre';
-import {ScatterplotLayer} from 'deck.gl';
+import {ScatterplotLayer, LineLayer} from 'deck.gl';
+import {PathStyleExtension} from '@deck.gl/extensions';
 import {MapboxOverlay as DeckOverlay} from '@deck.gl/mapbox';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import responsePopulation from '../services/data/responsePopulation.json';
 import { decode } from 'ngeohash';
 import get_population from '../services/population';
+
+const yellow = [248, 255, 21];
+const teal = [30, 186, 184];
+
+const colorRange = [
+    yellow, 
+    teal
+];
 
 const INITIAL_VIEW_STATE = {
     longitude: 2.1292877197265625,
@@ -21,6 +29,25 @@ function DeckGLOverlay(props) {
   const overlay = useControl(() => new DeckOverlay(props));
   overlay.setProps(props);
   return null;
+}
+
+const AREA_LIMIT_POLYGON = [ [ 2.094570465035209, 41.281745129447089 ],
+    [ 2.27079902501655, 41.432867822653769 ],
+    [ 2.198406380044962, 41.477229645498312 ],
+    [ 2.016571655638212, 41.382899835383817 ],
+    [ 2.094570465035209, 41.281745129447089 ] 
+];
+
+function isPointInPolygon(point, polygon) {
+  const [x, y] = point;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [xi, yi] = polygon[i];
+    const [xj, yj] = polygon[j];
+    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
 }
 
 let mapBounds = [
@@ -54,7 +81,7 @@ function Root() {
 
     const now = Date.now();
     const endDate = new Date(now).toISOString();
-    const startDate = new Date(now - 3600000).toISOString(); // one hour ago
+    const startDate = new Date(now).toISOString(); // 20 minutes ago
     const res = await get_population(
         mapBounds,
         startDate,
@@ -70,31 +97,47 @@ function Root() {
     }));
 
     lastFetch = Date.now();
+    console.log(formattedData);
     setData(formattedData);
-    };
+};
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const layers = [
+let layers = [
     new ScatterplotLayer({
-      id: 'scatterplot-layer',
-      data: data,
-      pickable: true,
-      opacity: 0.3,
-      stroked: false,
-      filled: true,
-      radiusScale: 6,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 50,
-      lineWidthMinPixels: 0,
-      getPosition: d => [d.coordinates.longitude, d.coordinates.latitude],
-      getRadius: d => d.pplDensity / 1000,
-      getFillColor: d => [255, 255, 0],
-      getLineColor: d => [0, 255, 0]
+        id: 'scatterplot-layer',
+        data: data,
+        pickable: true,
+        opacity: 0.3,
+        stroked: false,
+        filled: true,
+        radiusScale: 6,
+        radiusMinPixels: 1,
+        radiusMaxPixels: 50,
+        lineWidthMinPixels: 0,
+        getPosition: d => [d.coordinates.longitude, d.coordinates.latitude],
+        getRadius: d =>d.pplDensity ? (d.pplDensity || 0) / 1000 : 20,
+        getFillColor: d => d.pplDensity ? yellow : teal,
+        getLineColor: d => teal
+    }),  
+];
+
+layers.push(
+    new LineLayer({
+        id: 'line-layer',
+        data: AREA_LIMIT_POLYGON.map((point, index) => ({
+            sourcePosition: point,
+            targetPosition: AREA_LIMIT_POLYGON[(index + 1) % AREA_LIMIT_POLYGON.length]
+        })),
+        getSourcePosition: d => d.sourcePosition,
+        getTargetPosition: d => d.targetPosition,
+        getColor: yellow,
+        getWidth: 2,
+        getDashArray: [40, 20] // Dash pattern: 4px dash, 2px gap
     })
-  ];
+);
 
   async function updateMapBounds(bounds) {
     const ne = bounds.getNorthEast();
@@ -110,6 +153,13 @@ function Root() {
     ];
 
     mapBounds = boundary;
+
+    const points = boundary.map(point => [point.longitude, point.latitude]);
+    const isOutside = points.some(point => !isPointInPolygon(point, AREA_LIMIT_POLYGON));
+    if (isOutside) {
+      console.log('Map bounds are outside the area limit polygon');
+    }
+
     return boundary;
   }
 
@@ -124,7 +174,7 @@ function Root() {
 
     fetchTimer = setTimeout(() => {
         fetchData();
-    }, 200);
+    }, 50);
   };
 
   return (

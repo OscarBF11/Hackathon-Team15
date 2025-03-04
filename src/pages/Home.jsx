@@ -1,5 +1,4 @@
 import { useState } from "react";
-import MapViewHeatmap from "../components/MapView-heatmap";
 import "../style/Home.css";
 import MapViewHeatmap from "../components/MapView-heatmap"
 import DataConclusionsExample  from "../pages/DataConclusionsExample"

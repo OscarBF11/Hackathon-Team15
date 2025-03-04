@@ -4,7 +4,7 @@ import {GeoJsonLayer, LineLayer} from 'deck.gl';
 import {MapboxOverlay as DeckOverlay} from '@deck.gl/mapbox';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { decode } from 'ngeohash';
-import get_population from '../services/population';
+import { get_population } from '../services/population';
 
 const yellow = [248, 255, 21];
 const teal = [30, 186, 184];

@@ -36,6 +36,35 @@ const Timeline = ({ data, title }) => {
   );
 };
 
+// datasets
+const sampleData = {
+    "labels": [
+        "La Rambla",
+        "Plaça de Catalunya",
+        "Parc Güell",
+        "Sagrada Familia",
+        "Barceloneta Beach",
+        "Camp Nou",
+        "Passeig de Gràcia",
+        "Gothic Quarter",
+        "El Raval",
+        "Montjuïc"
+    ],
+    "population": [
+        15000,
+        12000,
+        8000,
+        14000,
+        11000,
+        9000,
+        7000,
+        8500,
+        6000,
+        7500
+    ]
+}
+
+
 const DataConclusions = ({ 
   data,
   conclusionsData, 
@@ -92,12 +121,35 @@ const DataConclusions = ({
         return (
           <div className="visualization-container">
             {/* charjs Grafics*/}
-            <Grafics labelsArray={["A","B","C"]} datasetsArrayObj={[1,2,3]} />
+            <Grafics labelsArray={
+                ["La Rambla",
+                "Plaça de Catalunya",
+                "Parc Güell",
+                "Sagrada Familia",
+                "Barceloneta Beach",
+                "Camp Nou",
+                "Passeig de Gràcia",
+                "Gothic Quarter",
+                "El Raval",
+                "Montjuïc"]}
+                datasetsArray={[
+                    15000,
+                    12000,
+                    8000,
+                    14000,
+                    11000,
+                    9000,
+                    7000,
+                    8500,
+                    6000,
+                    7500
+                ]
+                } />
 
             {/* <HeatMap data={conclusionsData} title="Crowd Density Heatmap" /> */}
             <div className="analysis-purpose">
               <h4>Purpose:</h4>
-              <p>Analyze specific events or crowds in the tourism sector, identifying hotspots and peak times.</p>
+              <p className='text'>Analyze specific events or crowds in the tourism sector, identifying hotspots and peak times.</p>
             </div>
           </div>
         );
@@ -108,7 +160,7 @@ const DataConclusions = ({
             <HeatMap data={conclusionsData} title="Location Density" />
             <div className="analysis-purpose">
               <h4>Purpose:</h4>
-              <p>Determine the best times of the year and business opportunities for rentals and pricing based on real attendance data by season. Useful for understanding which areas of specific events are most crowded.</p>
+              <p className='text'>Determine the best times of the year and business opportunities for rentals and pricing based on real attendance data by season. Useful for understanding which areas of specific events are most crowded.</p>
             </div>
           </div>
         );
@@ -131,7 +183,7 @@ const DataConclusions = ({
   return (
     <div className="data-conclusions-container">
       <div className="conclusions-header">
-        <h1>{title || 'Data Analysis Conclusions'}</h1>
+        <h1 className='title-resul'>{title || 'Data Analysis Conclusions'}</h1>
         <div className="analysis-metadata">
           <div className="type-category">
             <span className="label">Analysis Type:</span> {renderAnalysisType()}
@@ -151,7 +203,7 @@ const DataConclusions = ({
         {renderVisualization()}
       </div>
 
-      {conclusionsData && conclusionsData.insights && (
+      {/* {conclusionsData && conclusionsData.insights && (
         <div className="conclusions-insights">
           <h2>Key Insights</h2>
           <ul>
@@ -160,9 +212,9 @@ const DataConclusions = ({
             ))}
           </ul>
         </div>
-      )}
+      )} */}
 
-      {conclusionsData && conclusionsData.recommendations && (
+      {/* {conclusionsData && conclusionsData.recommendations && (
         <div className="conclusions-recommendations">
           <h2>Recommendations</h2>
           <ul>
@@ -171,7 +223,7 @@ const DataConclusions = ({
             ))}
           </ul>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

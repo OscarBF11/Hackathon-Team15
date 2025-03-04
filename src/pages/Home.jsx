@@ -91,13 +91,13 @@ export default function Dashboard() {
         {/* Map Section */}
         <section className="map-section">
           <h2>Map View</h2>
-          <div className="map-placeholder">
+          <div className="map-placeholder" st>
             <MapViewHeatmap />
-            <span>Map Placeholder</span>
+            {/* <span>Map Placeholder</span> */}
           </div>
         </section>
 
-        {/* <DataConclusionsExample/> */}
+        <DataConclusionsExample/>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../style/Home.css";
-import MapViewHeatmap from "../components/MapViewHeatmap"
+import MapViewHeatmap from "../components/MapView-heatmap"
 
 export default function Dashboard() {
   const [selectedOption, setSelectedOption] = useState("analyze");

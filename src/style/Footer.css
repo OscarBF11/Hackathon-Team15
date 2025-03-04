@@ -1,0 +1,20 @@
+/* Footer fijo */
+.footer {
+    width: 100%;
+    background-color: #222;
+    color: yellow;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    font-size: 0.9rem;
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+    .footer {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+}

@@ -1,11 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import {Map, NavigationControl, useControl} from 'react-map-gl/maplibre';
-import {ScatterplotLayer} from 'deck.gl';
+import {Map, NavigationControl, Marker, useControl} from 'react-map-gl/maplibre';
+import {GeoJsonLayer, LineLayer} from 'deck.gl';
 import {MapboxOverlay as DeckOverlay} from '@deck.gl/mapbox';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import responsePopulation from '../services/data/responsePopulation.json';
 import { decode } from 'ngeohash';
-import get_population from '../services/population';
+import { get_population } from '../services/population';
+
+const yellow = [248, 255, 21];
+const teal = [30, 186, 184];
+
+const colorRange = [
+    yellow, 
+    teal
+];
 
 const INITIAL_VIEW_STATE = {
     longitude: 2.1292877197265625,
@@ -16,12 +23,23 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
   };
 
+  const METERS_TO_DEGREES = 1 / 111320; // Approximate conversion factor for meters to degrees
+
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 function DeckGLOverlay(props) {
   const overlay = useControl(() => new DeckOverlay(props));
   overlay.setProps(props);
   return null;
 }
+
+const AREA_LIMIT_POLYGON = [ [ 2.094570465035209, 41.281745129447089 ],
+    [ 2.27079902501655, 41.432867822653769 ],
+    [ 2.198406380044962, 41.477229645498312 ],
+    [ 2.016571655638212, 41.382899835383817 ],
+    [ 2.094570465035209, 41.281745129447089 ] 
+];
+
+
 
 let mapBounds = [
     {
@@ -42,59 +60,138 @@ let mapBounds = [
     }
 ];
 
-let lastFetch = Date.now();
 let fetchTimer = null;
+
+let minDensity = 0;
+let maxDensity = 0;
+let minOpacity = 0.005;
+let maxOpacity = 0.9;
+
+const trainStations = [
+//   { name: 'Barcelona Sants', latitude: 41.378, longitude: 2.140 },
+//   { name: 'Passeig de Gràcia', latitude: 41.391, longitude: 2.165 },
+//   { name: 'Estació de França', latitude: 41.384, longitude: 2.183 },
+//   { name: 'Plaça de Catalunya', latitude: 41.387, longitude: 2.170 },
+//   { name: 'Arc de Triomf', latitude: 41.391, longitude: 2.180 },
+//   { name: 'Sagrera', latitude: 41.422, longitude: 2.186 }
+];
+
+let allData = [];
+const dataLimit = 5000;
 
 function Root() {
     const [data, setData] = useState([]);
     const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
     const fetchData = async () => {
-    console.log('Fetching data...');
+        console.log('Fetching data...');
 
-    const now = Date.now();
-    const endDate = new Date(now).toISOString();
-    const startDate = new Date(now - 3600000).toISOString(); // one hour ago
-    const res = await get_population(
-        mapBounds,
-        startDate,
-        endDate,
-        7
-    );
+        const now = Date.now();
+        const endDate = new Date(now);
+        endDate.setMinutes(0, 0, 0); // Set to the last full hour
+        const startDate = new Date(endDate);
+        startDate.setHours(endDate.getHours() - 1); // 1 hour before the last full hour
+        const res = await get_population(
+            mapBounds,
+            startDate,
+            endDate,
+            7
+        );
 
-    console.log('Received items:', res.timedPopulationDensityData[0].cellPopulationDensityData.length);
-    
-    const formattedData = res.timedPopulationDensityData[0].cellPopulationDensityData.map(cell => ({
-        ...cell,
-        coordinates: decode(cell.geohash)
-    }));
+        console.log('Received items:', res.timedPopulationDensityData[0].cellPopulationDensityData.length);
+        
+        const formattedData = res.timedPopulationDensityData[0].cellPopulationDensityData
+            .filter(cell => cell.pplDensity !== undefined && cell.pplDensity !== null)
+            .map(cell => ({
+                ...cell,
+                coordinates: decode(cell.geohash)
+            }));
 
-    lastFetch = Date.now();
-    setData(formattedData);
+        const densities = formattedData.map(d => d.pplDensity).filter(d => !isNaN(d));
+        minDensity = Math.min(Math.min(...densities), minDensity);
+        maxDensity = Math.max(Math.max(...densities), maxDensity);
+
+        // Merge new data with existing data
+        const newData = [...allData];
+        formattedData.forEach(newRecord => {
+            const index = newData.findIndex(record => record.geohash === newRecord.geohash);
+            if (index !== -1) {
+                newData[index] = newRecord;
+            } else {
+                newData.push(newRecord);
+            }
+        });
+
+        allData = newData;
+        if (newData.length > dataLimit) {
+            newData.splice(0, newData.length - dataLimit);
+        }
+
+        console.log('Data length:', newData.length);
+        setData(newData);
     };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-  const layers = [
-    new ScatterplotLayer({
-      id: 'scatterplot-layer',
-      data: data,
-      pickable: true,
-      opacity: 0.3,
-      stroked: false,
-      filled: true,
-      radiusScale: 6,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 50,
-      lineWidthMinPixels: 0,
-      getPosition: d => [d.coordinates.longitude, d.coordinates.latitude],
-      getRadius: d => d.pplDensity / 1000,
-      getFillColor: d => [255, 255, 0],
-      getLineColor: d => [0, 255, 0]
-    })
-  ];
+
+const getOpacity = (density) => {
+    const densityRatio = (density - minDensity) / (maxDensity - minDensity);
+    const opacity = minOpacity + densityRatio * (maxOpacity - minOpacity);
+    return opacity;
+};
+
+const getFillColor = (density) => {
+    let color =  density ? yellow : teal;
+    const opacity = getOpacity(density);
+    return color.concat(opacity * 255);
+}
+
+
+
+const layers = [
+  new GeoJsonLayer({
+    id: 'geojson-layer',
+    data: {
+      type: 'FeatureCollection',
+      features: data.map(d => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[
+            [d.coordinates.longitude - 75 * METERS_TO_DEGREES, d.coordinates.latitude - 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude + 75 * METERS_TO_DEGREES, d.coordinates.latitude - 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude + 75 * METERS_TO_DEGREES, d.coordinates.latitude + 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude - 75 * METERS_TO_DEGREES, d.coordinates.latitude + 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude - 75 * METERS_TO_DEGREES, d.coordinates.latitude - 75 * METERS_TO_DEGREES]
+          ]]
+        },
+        properties: {
+          density: d.pplDensity,
+        }
+      }))
+    },
+    filled: true,
+    getFillColor: d => getFillColor(d.properties.density),
+    getLineColor: [0, 0, 0, 0], // No border color
+    // opacity: 0.2,
+    stroked: false,
+    extruded: false
+  }),
+  new LineLayer({
+    id: 'line-layer',
+    data: AREA_LIMIT_POLYGON.map((point, index) => ({
+      sourcePosition: point,
+      targetPosition: AREA_LIMIT_POLYGON[(index + 1) % AREA_LIMIT_POLYGON.length]
+    })),
+    getSourcePosition: d => d.sourcePosition,
+    getTargetPosition: d => d.targetPosition,
+    getColor: yellow,
+    getWidth: 2,
+    getDashArray: [40, 20] // Dash pattern: 4px dash, 2px gap
+  })
+];
 
   async function updateMapBounds(bounds) {
     const ne = bounds.getNorthEast();
@@ -124,19 +221,24 @@ function Root() {
 
     fetchTimer = setTimeout(() => {
         fetchData();
-    }, 200);
+    }, 50);
   };
 
-  return (
+return (
     <Map 
-      initialViewState={viewState} 
-      mapStyle={MAP_STYLE}
-      onMove={handleMove}
+        initialViewState={viewState} 
+        mapStyle={MAP_STYLE}
+        onMove={handleMove}
     >
-      <DeckGLOverlay layers={layers} /* interleaved*/ />
-      <NavigationControl position="top-left" />
+        <DeckGLOverlay layers={layers} /* interleaved*/ />
+        <NavigationControl position="top-left" />
+        {trainStations.map(station => (
+            <Marker key={station.name} latitude={station.latitude} longitude={station.longitude}>
+                <div style={{ backgroundColor: `rgb(${teal.join(',')})`, borderRadius: '50%', width: '10px', height: '10px' }} />
+            </Marker>
+        ))}
     </Map>
-  );
+);
 }
 
 export default Root;

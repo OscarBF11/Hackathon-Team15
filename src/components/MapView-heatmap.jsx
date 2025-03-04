@@ -84,8 +84,10 @@ function Root() {
     console.log('Fetching data...');
 
     const now = Date.now();
-    const endDate = new Date(now).toISOString();
-    const startDate = new Date(now).toISOString(); // 20 minutes ago
+    const endDate = new Date(now);
+    endDate.setMinutes(0, 0, 0); // Set to the last full hour
+    const startDate = new Date(endDate);
+    startDate.setHours(endDate.getHours() - 1); // 1 hour before the last full hour
     const res = await get_population(
         mapBounds,
         startDate,

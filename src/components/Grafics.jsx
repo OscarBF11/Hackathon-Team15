@@ -9,7 +9,7 @@ const options = {
     responsive: true,
     plugins: {
         legend: { position: "top" },
-        title: { display: true, text: "Ventas Mensuales" },
+        title: { display: true, text: "Population In Barcelona" },
     },
 };
 
@@ -17,12 +17,12 @@ const Grafics = ({labelsArray,datasetsArray}) => {
     const data = {
         // labels: ["Enero", "Febrero", "Marzo", "Abril"],
         datasets: [
-        {
-            label: "Ventas",
-            data: datasetsArray,
-            borderColor: "rgb(158, 141, 54)",
-            backgroundColor: "rgba(255, 255, 255, 0.74)",
-        },
+            {
+                label: "population",
+                data: datasetsArray,
+                borderColor: "rgb(158, 141, 54)",
+                backgroundColor: "rgba(255, 255, 255, 0.74)",
+            },
         ],
         labels: labelsArray,
         // datasets: datasetsArrayObj

@@ -92,7 +92,7 @@ const DataConclusions = ({
         return (
           <div className="visualization-container">
             {/* charjs Grafics*/}
-            <Grafics labelsArray={["A","B"]} datasetsArrayObj={[{1,2,3},{4,52,1}]} />
+            <Grafics labelsArray={["A","B","C"]} datasetsArrayObj={[1,2,3]} />
 
             {/* <HeatMap data={conclusionsData} title="Crowd Density Heatmap" /> */}
             <div className="analysis-purpose">

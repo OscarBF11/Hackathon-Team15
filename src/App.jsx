@@ -1,6 +1,6 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Footer from './components/Footer'; // Importa el Footer
+import Footer from './components/Footer';
 import Home from './pages/Home';
 
 const App = () => {
@@ -10,7 +10,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Home />} />
                 </Routes>
-                <Footer /> {}
+                <Footer />
             </div>
         </Router>
     );

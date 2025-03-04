@@ -142,6 +142,7 @@ const DataConclusionsExample = () => {
 
       {/* Render the DataConclusions component with appropriate data */}
       <DataConclusions 
+        // data={sampleData.tourism.data}
         conclusionsData={getDataForAnalysisType()}
         type={analysisType}
         category={category}

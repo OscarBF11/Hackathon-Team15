@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import '../styles/DataConclusions.css';
 
+// charjs
+import Grafics from '../components/Grafics';
+
 // Component to display heatmap visualizations
 const HeatMap = ({ data, title }) => {
   return (
@@ -34,6 +37,7 @@ const Timeline = ({ data, title }) => {
 };
 
 const DataConclusions = ({ 
+  data,
   conclusionsData, 
   type, 
   category,
@@ -81,11 +85,16 @@ const DataConclusions = ({
       return <div className="no-data">No data available for visualization</div>;
     }
 
+    
+
     switch (visualizationType) {
       case 'heatmap':
         return (
           <div className="visualization-container">
-            <HeatMap data={conclusionsData} title="Crowd Density Heatmap" />
+            {/* charjs Grafics*/}
+            <Grafics data={data} />
+
+            {/* <HeatMap data={conclusionsData} title="Crowd Density Heatmap" /> */}
             <div className="analysis-purpose">
               <h4>Purpose:</h4>
               <p>Analyze specific events or crowds in the tourism sector, identifying hotspots and peak times.</p>

@@ -1,51 +1,99 @@
-import { useState } from 'react';
-import Header from '../components/Header';
-import MapView from '../components/MapView';
-import '../style/Home.css';
+import { useState } from "react";
+import "../style/Home.css";
 
-const Home = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filter, setFilter] = useState(null);
-    const [activeMap] = useState('map1'); // Estado para controlar el mapa activo
-    const [analysisType, setAnalysisType] = useState('general'); // Estado para el tipo de análisis
+export default function Dashboard() {
+  const [selectedOption, setSelectedOption] = useState("analyze");
+  const [coordinates, setCoordinates] = useState([{ lat: "", lon: "" }]); // Inicializa con un campo vacío
 
-    return (
-        <div className="home-container">
-            <Header onSearch={setSearchTerm} onFilter={setFilter} />
-            <main className="main-content">
-                <section className="map-section">
-                <div className="analysis-buttons">
-                        <button 
-                            className={analysisType === 'general' ? 'active' : ''} 
-                            onClick={() => setAnalysisType('general')}
-                        >
-                            General Analysis (Tourism)
-                        </button>
-                        <button 
-                            className={analysisType === 'specific' ? 'active' : ''} 
-                            onClick={() => setAnalysisType('specific')}
-                        >
-                            Specific Location Analysis
-                        </button>
-                        <button 
-                            className={analysisType === 'multiple' ? 'active' : ''} 
-                            onClick={() => setAnalysisType('multiple')}
-                        >
-                            Analysis of various places
-                        </button>
-                    </div>
-                
+  // Función para actualizar los valores de latitud/longitud en la lista
+  const handleCoordinateChange = (index, field, value) => {
+    const newCoordinates = [...coordinates];
+    newCoordinates[index][field] = value;
+    setCoordinates(newCoordinates);
+  };
 
-                    {/* Renderizar el mapa activo */}
-                    {activeMap === 'map1' ? (
-                        <MapView searchTerm={searchTerm} filter={filter} mapType="map1" analysisType={analysisType} />
-                    ) : (
-                        <MapView searchTerm={searchTerm} filter={filter} mapType="map2" analysisType={analysisType} />
-                    )}
-                </section>
-            </main>
-        </div>
-    );
-};
+  // Función para agregar un nuevo conjunto de campos
+  const addCoordinateField = () => {
+    setCoordinates([...coordinates, { lat: "", lon: "" }]); // Agrega un nuevo campo vacío
+  };
 
-export default Home;
+  return (
+    <div className="dashboard-container">
+      {/* Header */}
+      <header className="dashboard-header">
+        <h1>SMART TRANSPORT ANALYSIS</h1>
+      </header>
+
+      <div className="content-wrapper">
+        {/* Data Analytics Section */}
+        <section className="data-container">
+          <h2>Data Analytics</h2>
+          <div className="analysis-selector">
+            <select
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value)}
+            >
+              <option value="analyze">General analysis</option>
+              <option value="specific-place">
+                Analysis of a specific place (Categories: specific place)
+              </option>
+              <option value="multiple-places">
+                Analysis of several specific places (Categories: various specific places)
+              </option>
+            </select>
+          </div>
+
+          {/* Sección dinámica basada en la selección */}
+          <div className="analysis-description">
+            {selectedOption === "specific-place" && (
+              <div className="coordinates-input">
+                <input
+                  type="text"
+                  placeholder="Enter latitude"
+                  value={coordinates[0].lat}
+                  onChange={(e) => handleCoordinateChange(0, "lat", e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Enter longitude"
+                  value={coordinates[0].lon}
+                  onChange={(e) => handleCoordinateChange(0, "lon", e.target.value)}
+                />
+              </div>
+            )}
+
+            {selectedOption === "multiple-places" && (
+              <div className="multiple-coordinates">
+                {coordinates.map((coord, index) => (
+                  <div key={index} className="coordinates-input">
+                    <input
+                      type="text"
+                      placeholder={`Latitude ${index + 1}`}
+                      value={coord.lat}
+                      onChange={(e) => handleCoordinateChange(index, "lat", e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder={`Longitude ${index + 1}`}
+                      value={coord.lon}
+                      onChange={(e) => handleCoordinateChange(index, "lon", e.target.value)}
+                    />
+                  </div>
+                ))}
+                <button onClick={addCoordinateField}>Add more</button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Map Section */}
+        <section className="map-section">
+          <h2>Map View</h2>
+          <div className="map-placeholder">
+            <span>Map Placeholder</span>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

@@ -22,7 +22,7 @@ export default function Dashboard() {
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <h1>SMART TRANSPORT ANALYSIS</h1>
+        <h1>FLOW INSIGHTS</h1>
       </header>
 
       <div className="content-wrapper">

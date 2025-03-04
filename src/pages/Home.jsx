@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../style/Home.css";
 import MapViewHeatmap from "../components/MapView-heatmap"
+import DataConclusionsExample  from "../pages/DataConclusionsExample"
 
 export default function Dashboard() {
   const [selectedOption, setSelectedOption] = useState("analyze");
@@ -95,6 +96,8 @@ export default function Dashboard() {
             <span>Map Placeholder</span>
           </div>
         </section>
+
+        {/* <DataConclusionsExample/> */}
       </div>
     </div>
   );

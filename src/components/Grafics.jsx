@@ -13,19 +13,19 @@ const options = {
     },
 };
 
-const Grafics = ({labelsArray,datasetsArrayObj}) => {
+const Grafics = ({labelsArray,datasetsArray}) => {
     const data = {
         // labels: ["Enero", "Febrero", "Marzo", "Abril"],
-        // datasets: [
-        // {
-        //     label: "Ventas",
-        //     data: [10, 20, 30, 40],
-        //     borderColor: "rgb(75, 192, 192)",
-        //     backgroundColor: "rgba(75, 192, 192, 0.2)",
-        // },
-        // ],
+        datasets: [
+        {
+            label: "Ventas",
+            data: datasetsArray,
+            borderColor: "rgb(158, 141, 54)",
+            backgroundColor: "rgba(255, 255, 255, 0.74)",
+        },
+        ],
         labels: labelsArray,
-        datasets: datasetsArrayObj
+        // datasets: datasetsArrayObj
     };
 
 

@@ -85,14 +85,14 @@ const DataConclusions = ({
       return <div className="no-data">No data available for visualization</div>;
     }
 
-    
+
 
     switch (visualizationType) {
       case 'heatmap':
         return (
           <div className="visualization-container">
             {/* charjs Grafics*/}
-            <Grafics data={data} />
+            <Grafics labelsArray={["A","B"]} datasetsArrayObj={[{1,2,3},{4,52,1}]} />
 
             {/* <HeatMap data={conclusionsData} title="Crowd Density Heatmap" /> */}
             <div className="analysis-purpose">

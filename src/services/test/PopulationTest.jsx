@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import get_population from './population';
+import get_population from '../population';
 
 const PopulationTest = () => {
     const [data, setData] = useState(null);

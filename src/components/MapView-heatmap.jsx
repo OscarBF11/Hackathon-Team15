@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Map, NavigationControl, useControl} from 'react-map-gl/maplibre';
+import {Map, NavigationControl, Marker, useControl} from 'react-map-gl/maplibre';
 import {GeoJsonLayer, LineLayer} from 'deck.gl';
 import {MapboxOverlay as DeckOverlay} from '@deck.gl/mapbox';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -67,8 +67,14 @@ let maxDensity = 0;
 let minOpacity = 0.005;
 let maxOpacity = 0.4;
 
-
-
+const trainStations = [
+//   { name: 'Barcelona Sants', latitude: 41.378, longitude: 2.140 },
+//   { name: 'Passeig de Gràcia', latitude: 41.391, longitude: 2.165 },
+//   { name: 'Estació de França', latitude: 41.384, longitude: 2.183 },
+//   { name: 'Plaça de Catalunya', latitude: 41.387, longitude: 2.170 },
+//   { name: 'Arc de Triomf', latitude: 41.391, longitude: 2.180 },
+//   { name: 'Sagrera', latitude: 41.422, longitude: 2.186 }
+];
 
 function Root() {
     const [data, setData] = useState([]);
@@ -195,16 +201,21 @@ const layers = [
     }, 50);
   };
 
-  return (
+return (
     <Map 
-      initialViewState={viewState} 
-      mapStyle={MAP_STYLE}
-      onMove={handleMove}
+        initialViewState={viewState} 
+        mapStyle={MAP_STYLE}
+        onMove={handleMove}
     >
-      <DeckGLOverlay layers={layers} /* interleaved*/ />
-      <NavigationControl position="top-left" />
+        <DeckGLOverlay layers={layers} /* interleaved*/ />
+        <NavigationControl position="top-left" />
+        {trainStations.map(station => (
+            <Marker key={station.name} latitude={station.latitude} longitude={station.longitude}>
+                <div style={{ backgroundColor: `rgb(${teal.join(',')})`, borderRadius: '50%', width: '10px', height: '10px' }} />
+            </Marker>
+        ))}
     </Map>
-  );
+);
 }
 
 export default Root;

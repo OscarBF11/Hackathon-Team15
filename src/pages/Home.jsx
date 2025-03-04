@@ -3,6 +3,7 @@ import "../style/Home.css";
 import MapViewHeatmap from "../components/MapView-heatmap"
 import DataConclusionsExample  from "../pages/DataConclusionsExample"
 
+
 export default function Dashboard() {
   const [selectedOption, setSelectedOption] = useState("analyze");
   const [coordinates, setCoordinates] = useState([{ lat: "", lon: "" }]); // Inicializa con un campo vacío
@@ -23,7 +24,7 @@ export default function Dashboard() {
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <h1>SMART TRANSPORT ANALYSIS</h1>
+        <h1>FLOW INSIGHTS</h1>
       </header>
 
       <div className="content-wrapper">

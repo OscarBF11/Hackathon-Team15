@@ -1,6 +1,6 @@
 import { useState } from "react";
+import MapViewHeatmap from "../components/MapView-heatmap";
 import "../style/Home.css";
-import MapViewHeatmap from "../components/MapView-heatmap"
 
 export default function Dashboard() {
   const [selectedOption, setSelectedOption] = useState("analyze");
@@ -92,7 +92,7 @@ export default function Dashboard() {
           <h2>Map View</h2>
           <div className="map-placeholder">
             <MapViewHeatmap />
-            <span>Map Placeholder</span>
+            {/* <span>Map Placeholder</span> */}
           </div>
         </section>
       </div>

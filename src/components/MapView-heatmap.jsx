@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Map, NavigationControl, useControl} from 'react-map-gl/maplibre';
-import {ScatterplotLayer, LineLayer} from 'deck.gl';
-import {PathStyleExtension} from '@deck.gl/extensions';
+import {GeoJsonLayer, LineLayer} from 'deck.gl';
 import {MapboxOverlay as DeckOverlay} from '@deck.gl/mapbox';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { decode } from 'ngeohash';
@@ -24,6 +23,8 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
   };
 
+  const METERS_TO_DEGREES = 1 / 111320; // Approximate conversion factor for meters to degrees
+
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 function DeckGLOverlay(props) {
   const overlay = useControl(() => new DeckOverlay(props));
@@ -38,17 +39,7 @@ const AREA_LIMIT_POLYGON = [ [ 2.094570465035209, 41.281745129447089 ],
     [ 2.094570465035209, 41.281745129447089 ] 
 ];
 
-function isPointInPolygon(point, polygon) {
-  const [x, y] = point;
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const [xi, yi] = polygon[i];
-    const [xj, yj] = polygon[j];
-    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-  return inside;
-}
+
 
 let mapBounds = [
     {
@@ -69,8 +60,15 @@ let mapBounds = [
     }
 ];
 
-let lastFetch = Date.now();
 let fetchTimer = null;
+
+let minDensity = 0;
+let maxDensity = 0;
+let minOpacity = 0.005;
+let maxOpacity = 0.4;
+
+
+
 
 function Root() {
     const [data, setData] = useState([]);
@@ -96,7 +94,10 @@ function Root() {
         coordinates: decode(cell.geohash)
     }));
 
-    lastFetch = Date.now();
+    const densities = formattedData.map(d => d.pplDensity).filter(d => !isNaN(d));
+    minDensity = Math.min(...densities);
+    maxDensity = Math.max(...densities);
+
     console.log(formattedData);
     setData(formattedData);
 };
@@ -105,39 +106,63 @@ function Root() {
     fetchData();
   }, []);
 
-let layers = [
-    new ScatterplotLayer({
-        id: 'scatterplot-layer',
-        data: data,
-        pickable: true,
-        opacity: 0.3,
-        stroked: false,
-        filled: true,
-        radiusScale: 6,
-        radiusMinPixels: 1,
-        radiusMaxPixels: 50,
-        lineWidthMinPixels: 0,
-        getPosition: d => [d.coordinates.longitude, d.coordinates.latitude],
-        getRadius: d =>d.pplDensity ? (d.pplDensity || 0) / 1000 : 20,
-        getFillColor: d => d.pplDensity ? yellow : teal,
-        getLineColor: d => teal
-    }),  
-];
 
-layers.push(
-    new LineLayer({
-        id: 'line-layer',
-        data: AREA_LIMIT_POLYGON.map((point, index) => ({
-            sourcePosition: point,
-            targetPosition: AREA_LIMIT_POLYGON[(index + 1) % AREA_LIMIT_POLYGON.length]
-        })),
-        getSourcePosition: d => d.sourcePosition,
-        getTargetPosition: d => d.targetPosition,
-        getColor: yellow,
-        getWidth: 2,
-        getDashArray: [40, 20] // Dash pattern: 4px dash, 2px gap
-    })
-);
+const getOpacity = (density) => {
+    const densityRatio = (density - minDensity) / (maxDensity - minDensity);
+    const opacity = minOpacity + densityRatio * (maxOpacity - minOpacity);
+    return opacity;
+};
+
+const getFillColor = (density) => {
+    let color =  density ? yellow : teal;
+    const opacity = getOpacity(density);
+    return color.concat(opacity * 255);
+}
+
+
+
+const layers = [
+  new GeoJsonLayer({
+    id: 'geojson-layer',
+    data: {
+      type: 'FeatureCollection',
+      features: data.map(d => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[
+            [d.coordinates.longitude - 75 * METERS_TO_DEGREES, d.coordinates.latitude - 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude + 75 * METERS_TO_DEGREES, d.coordinates.latitude - 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude + 75 * METERS_TO_DEGREES, d.coordinates.latitude + 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude - 75 * METERS_TO_DEGREES, d.coordinates.latitude + 75 * METERS_TO_DEGREES],
+            [d.coordinates.longitude - 75 * METERS_TO_DEGREES, d.coordinates.latitude - 75 * METERS_TO_DEGREES]
+          ]]
+        },
+        properties: {
+          density: d.pplDensity,
+        }
+      }))
+    },
+    filled: true,
+    getFillColor: d => getFillColor(d.properties.density),
+    getLineColor: [0, 0, 0, 0], // No border color
+    // opacity: 0.2,
+    stroked: false,
+    extruded: false
+  }),
+  new LineLayer({
+    id: 'line-layer',
+    data: AREA_LIMIT_POLYGON.map((point, index) => ({
+      sourcePosition: point,
+      targetPosition: AREA_LIMIT_POLYGON[(index + 1) % AREA_LIMIT_POLYGON.length]
+    })),
+    getSourcePosition: d => d.sourcePosition,
+    getTargetPosition: d => d.targetPosition,
+    getColor: yellow,
+    getWidth: 2,
+    getDashArray: [40, 20] // Dash pattern: 4px dash, 2px gap
+  })
+];
 
   async function updateMapBounds(bounds) {
     const ne = bounds.getNorthEast();
@@ -153,13 +178,6 @@ layers.push(
     ];
 
     mapBounds = boundary;
-
-    const points = boundary.map(point => [point.longitude, point.latitude]);
-    const isOutside = points.some(point => !isPointInPolygon(point, AREA_LIMIT_POLYGON));
-    if (isOutside) {
-      console.log('Map bounds are outside the area limit polygon');
-    }
-
     return boundary;
   }
 

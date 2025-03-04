@@ -1,0 +1,181 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo general del cuerpo */
+body {
+    background-color: #121212;
+    /* Negro oscuro */
+    color: #FFD700;
+    /* Amarillo dorado */
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-y: auto;
+    width: 100%;
+    padding: 20px;
+}
+
+/* Contenedor principal */
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header */
+.dashboard-header h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: clamp(24px, 4vw, 36px);
+    color: #FFD700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Contenedor flexible */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Sección de Data Analytics */
+.data-container {
+    background-color: #1E1E1E;
+    /* Negro grisáceo */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+}
+
+/* Selector */
+.analysis-selector select {
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+    font-size: 16px;
+    background-color: #2C2C2C;
+    /* Gris oscuro */
+    color: #FFD700;
+    border: 2px solid #E6C200;
+    /* Amarillo cálido */
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Estilos de los inputs */
+.coordinates-input {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.coordinates-input input {
+    width: 45%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2C2C2C;
+    color: #FFD700;
+    border: 2px solid #E6C200;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.coordinates-input input:focus {
+    border-color: #FFA500;
+    /* Resalta en naranja cuando se enfoca */
+}
+
+/* Botón para agregar más ubicaciones */
+button {
+    background-color: #FFD700;
+    color: #121212;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #E6C200;
+}
+
+/* Contenedor del mapa */
+.map-section {
+    background-color: #1E1E1E;
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+}
+
+/* Placeholder del mapa */
+.map-placeholder {
+    background: rgba(255, 255, 255, 0.08);
+    width: 100%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFD700;
+    font-size: 18px;
+}
+
+/* 🔹 RESPONSIVE DESIGN 🔹 */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+
+    .content-wrapper {
+        padding: 0 10px;
+    }
+
+    .data-container {
+        padding: 15px;
+    }
+
+    .analysis-selector select,
+    .coordinates-input input {
+        font-size: 14px;
+        height: 36px;
+    }
+
+    .coordinates-input {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .coordinates-input input {
+        width: 100%;
+    }
+
+    .map-section {
+        height: 40vh;
+    }
+
+    button {
+        width: 100%;
+    }
+}

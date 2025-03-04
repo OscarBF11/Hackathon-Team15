@@ -65,7 +65,7 @@ let fetchTimer = null;
 let minDensity = 0;
 let maxDensity = 0;
 let minOpacity = 0.005;
-let maxOpacity = 0.4;
+let maxOpacity = 0.9;
 
 const trainStations = [
 //   { name: 'Barcelona Sants', latitude: 41.378, longitude: 2.140 },
@@ -76,43 +76,64 @@ const trainStations = [
 //   { name: 'Sagrera', latitude: 41.422, longitude: 2.186 }
 ];
 
+let allData = [];
+const dataLimit = 5000;
+
 function Root() {
     const [data, setData] = useState([]);
     const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
     const fetchData = async () => {
-    console.log('Fetching data...');
+        console.log('Fetching data...');
 
-    const now = Date.now();
-    const endDate = new Date(now);
-    endDate.setMinutes(0, 0, 0); // Set to the last full hour
-    const startDate = new Date(endDate);
-    startDate.setHours(endDate.getHours() - 1); // 1 hour before the last full hour
-    const res = await get_population(
-        mapBounds,
-        startDate,
-        endDate,
-        7
-    );
+        const now = Date.now();
+        const endDate = new Date(now);
+        endDate.setMinutes(0, 0, 0); // Set to the last full hour
+        const startDate = new Date(endDate);
+        startDate.setHours(endDate.getHours() - 1); // 1 hour before the last full hour
+        const res = await get_population(
+            mapBounds,
+            startDate,
+            endDate,
+            7
+        );
 
-    console.log('Received items:', res.timedPopulationDensityData[0].cellPopulationDensityData.length);
-    
-    const formattedData = res.timedPopulationDensityData[0].cellPopulationDensityData.map(cell => ({
-        ...cell,
-        coordinates: decode(cell.geohash)
-    }));
+        console.log('Received items:', res.timedPopulationDensityData[0].cellPopulationDensityData.length);
+        
+        const formattedData = res.timedPopulationDensityData[0].cellPopulationDensityData
+            .filter(cell => cell.pplDensity !== undefined && cell.pplDensity !== null)
+            .map(cell => ({
+                ...cell,
+                coordinates: decode(cell.geohash)
+            }));
 
-    const densities = formattedData.map(d => d.pplDensity).filter(d => !isNaN(d));
-    minDensity = Math.min(...densities);
-    maxDensity = Math.max(...densities);
+        const densities = formattedData.map(d => d.pplDensity).filter(d => !isNaN(d));
+        minDensity = Math.min(Math.min(...densities), minDensity);
+        maxDensity = Math.max(Math.max(...densities), maxDensity);
 
-    console.log(formattedData);
-    setData(formattedData);
-};
+        // Merge new data with existing data
+        const newData = [...allData];
+        formattedData.forEach(newRecord => {
+            const index = newData.findIndex(record => record.geohash === newRecord.geohash);
+            if (index !== -1) {
+                newData[index] = newRecord;
+            } else {
+                newData.push(newRecord);
+            }
+        });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+        allData = newData;
+        if (newData.length > dataLimit) {
+            newData.splice(0, newData.length - dataLimit);
+        }
+
+        console.log('Data length:', newData.length);
+        setData(newData);
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
 
 const getOpacity = (density) => {

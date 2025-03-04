@@ -35,20 +35,30 @@ const get_population = async (
     }
 };
     try {
-        console.log("options",options);
+        // console.log("options",options);
         const response = await axios.request(options);
-        console.log(response.data);
+        // console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error in request:", error);
     }
 };
 
-const getCurrentISOTime = () => {
+const getCurrentISOTime = (days = 0, hours = 0, minutes = 30) => {
+    // hours (24), days(100), minutes(60)
     const now = new Date();
-    return now.toISOString();
+    const futureTime = new Date(now.getTime());
+    
+    futureTime.setHours(now.getHours() + hours);
+    futureTime.setMinutes(now.getMinutes() + minutes);
+    futureTime.setDate(now.getDate() + days);
+    
+    return {
+        now: now.toISOString(),
+        future: futureTime.toISOString()
+    };
 };
 
 // console.log(getCurrentISOTime()); // Ejemplo de salida: 2024-04-23T14:44:18.165Z
 
-export default get_population;
+export { get_population, getCurrentISOTime };

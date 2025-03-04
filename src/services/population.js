@@ -11,7 +11,12 @@ const header = {
 
 console.log("myAPI_KEY",API_KEY);
 
-const get_population = async (boundaryArray, startDate, endDate, precision) => {
+const get_population = async (
+    boundaryArray,
+    startDate = getCurrentISOTime(),
+    endDate,
+    precision
+) => {
     const options = {
     method: 'POST',
     url: 'https://population-density-data.p-eu.rapidapi.com/retrieve',
@@ -24,12 +29,13 @@ const get_population = async (boundaryArray, startDate, endDate, precision) => {
     // startDate: '2024-04-23T14:44:18.165Z',
     // endDate: '2024-04-23T14:44:18.165Z',
     // precision: 7
-    startDate: startDate,
-    endDate: endDate,
+    startTime: startDate,
+    endTime: endDate,
     precision: precision
     }
 };
     try {
+        console.log("options",options);
         const response = await axios.request(options);
         console.log(response.data);
         return response.data;
@@ -37,5 +43,12 @@ const get_population = async (boundaryArray, startDate, endDate, precision) => {
         console.error("Error in request:", error);
     }
 };
+
+const getCurrentISOTime = () => {
+    const now = new Date();
+    return now.toISOString();
+};
+
+// console.log(getCurrentISOTime()); // Ejemplo de salida: 2024-04-23T14:44:18.165Z
 
 export default get_population;
